@@ -284,30 +284,6 @@ apply_a57_core_errata:
 	b 0b
 ENDPROC(apply_core_errata)
 
-/*-----------------------------------------------------------------------*/
-/* Exfiltrate bytes from SRAM  */
-
-.global _start
-_start:
-	/* setup registers to start, read, store */
-	ldr x0, =SRAM_START     	/* first address for SRAM */
-	ldr x1, =SRAM_READ_SIZE 	/* size of read*/
-	ldr x2, =STORE_LOC   /* loc of read? */
-
-read_sram_loop:
-	cmp x1, #0              		/* conditional for reading */
-	beq done_reading	   	/* If true -> done_reading_sram */
-
-	ldrb w3, [x0], #1       		/* Load a byte from SRAM, increment x0 */
-	strb w3, [x2], #1       		/* Store byte, increment x2 */
-	sub x1, x1, #1          		/* Decrement */
-	b read_sram_loop        	
-
-done_reading:
-/* continue with boot */
-
-/*-----------------------------------------------------------------------*/
-
 WEAK(lowlevel_init)
 	mov	x29, lr			/* Save LR */
 

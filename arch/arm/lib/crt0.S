@@ -104,16 +104,33 @@ ENTRY(_main)
 	ldr	r0, =(CONFIG_TPL_STACK)
 #elif defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
 	ldr	r0, =(CONFIG_SPL_STACK)
+
+/*-----------------------------------------------------------------------*/
+/* BEGIN SRAM READING CODE */
+
 #else
 	ldr	r0, =(SYS_INIT_SP_ADDR)
 #endif
-	bic	r0, r0, #7	/* 8-byte alignment for ABI compliance */
+	bic	r0, r0, #7	/* align stack pointer */
 	mov	sp, r0
+	mov	r9, r0
+
+	/* Read SRAM, store to far memory */
+	ldr	r0, =0x00000000       /* SRAM start */
+	ldr	r1, =0x1FFFFFF0       /* Farthest 16 bytes within 8GB */
+	ldr	r2, =16               /* Read 16 bytes */
+
+read_sram_loop:
+	ldr	r3, [r0], #4          /* Read 32 bits from SRAM */
+	str	r3, [r1], #4          /* Store 32 bits to memory */
+	subs	r2, r2, #4            /* Decrement count */
+	bne	read_sram_loop        /* Loop if not done */
+
 	bl	board_init_f_alloc_reserve
 	mov	sp, r0
-	/* set up gd here, outside any C code */
-	mov	r9, r0
-	bl	board_init_f_init_reserve
+
+/* END SRAM READ CODE */
+/*-----------------------------------------------------------------------*/
 
 #if defined(CONFIG_DEBUG_UART) && CONFIG_IS_ENABLED(SERIAL)
 	bl	debug_uart_init
