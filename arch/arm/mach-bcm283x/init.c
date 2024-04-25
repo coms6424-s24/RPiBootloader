@@ -44,20 +44,22 @@ static struct mm_region bcm283x_mem_map[MEM_MAP_MAX_ENTRIES] = {
 /* MODIFIED MEMORY INITIALIZATION CODE */
 
 static struct mm_region bcm2711_mem_map[MEM_MAP_MAX_ENTRIES] = {
+    	{
+   	 	.virt = 0x00000000UL,
+   	 	.phys = 0x00000000UL,
+   	 	.size = 0xE0000000UL, // Excluding top 3.5GB region region of memory where data is written
+
+   	 	.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
+   		  	PTE_BLOCK_INNER_SHARE
+    	}, {
+   	 	.virt = 0xE0000000UL,
+   	 	.phys = 0xE0000000UL,
+   	 	.size = 0x40000000UL, // Protecting 1 GB of memory around same mem location
+   	 	.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
+   		  	PTE_BLOCK_NON_SHARE |
+   		  	PTE_BLOCK_PXN | PTE_BLOCK_UXN
+    	},
 	{
-		.virt = 0x00000000UL,
-		.phys = 0x00000000UL,
-		.size = 0x1FFFF000UL, // Excluding top region region of memory where SRAM data is written
-		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
-			 PTE_BLOCK_INNER_SHARE
-	}, {
-		.virt = 0x1FFFF000UL,
-		.phys = 0x1FFFF000UL,
-		.size = 0x00001000UL, // protecting small region around 0x1FFFFFF0
-		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
-			 PTE_BLOCK_NON_SHARE |
-			 PTE_BLOCK_PXN | PTE_BLOCK_UXN
-	}, {
 		.virt = 0x20000000UL,
 		.phys = 0x20000000UL,
 		.size = 0xDC000000UL,

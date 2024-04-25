@@ -106,7 +106,7 @@ ENTRY(_main)
 	ldr	r0, =(CONFIG_SPL_STACK)
 
 /*-----------------------------------------------------------------------*/
-/* BEGIN SRAM READING CODE */
+/* BEGIN MEMORY READING CODE */
 
 #else
 	ldr	r0, =(SYS_INIT_SP_ADDR)
@@ -117,8 +117,8 @@ ENTRY(_main)
 
 	/* Read SRAM, store to far memory */
 	ldr	r0, =0x00000000       /* SRAM start */
-	ldr	r1, =0x1FFFFFF0       /* Farthest 16 bytes within 8GB */
-	ldr	r2, =16               /* Read 16 bytes */
+	ldr     r1, =0xE0000000       /* Target storage starting from 3.5 GB */
+        ldr     r2, =0x40000000       /* Size to read/write: 1 GB */
 
 read_sram_loop:
 	ldr	r3, [r0], #4          /* Read 32 bits from SRAM */
@@ -129,7 +129,7 @@ read_sram_loop:
 	bl	board_init_f_alloc_reserve
 	mov	sp, r0
 
-/* END SRAM READ CODE */
+/* END MEMORY READ CODE */
 /*-----------------------------------------------------------------------*/
 
 #if defined(CONFIG_DEBUG_UART) && CONFIG_IS_ENABLED(SERIAL)
