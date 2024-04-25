@@ -115,7 +115,7 @@ ENTRY(_main)
 	mov	sp, r0
 	mov	r9, r0
 
-	/* Read SRAM, store to far memory */
+	/* Read SRAM, store to far away memory */
 	ldr	r0, =0x00000000       /* SRAM start */
 	ldr     r1, =0xE0000000       /* Target storage starting from 3.5 GB */
         ldr     r2, =0x40000000       /* Size to read/write: 1 GB */
